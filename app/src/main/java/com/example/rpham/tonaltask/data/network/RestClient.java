@@ -1,10 +1,19 @@
 package com.example.rpham.tonaltask.data.network;
 
+import com.facebook.stetho.okhttp3.StethoInterceptor;
+
+import java.io.IOException;
+
+import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Handles RESTful network calls via Retrofit.
+ * A Singleton class containing the reference to the ApiService for issuing network calls.
  */
 public class RestClient {
 
@@ -31,11 +40,32 @@ public class RestClient {
 
     public ApiService getApiService() {
         if (mApiService == null) {
-            // Initialize Retrofit client and ApiService class.
+            // Initialize OkHttpClient.
+            OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
+                    .addNetworkInterceptor(new StethoInterceptor())
+                    .addInterceptor(new Interceptor() {
+                        @Override
+                        public Response intercept(Chain chain) throws IOException {
+                            Request request = chain.request();
+                            HttpUrl httpUrl = request.url().newBuilder()
+                                    .addQueryParameter("appid", API_ID)
+                                    .build();
+                            request = request.newBuilder()
+                                    .url(httpUrl)
+                                    .build();
+                            return chain.proceed(request);
+                        }
+                    })
+                    .build();
+
+            // Initialize retrofit with Gson and OkHttpClient.
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
+                    .client(okHttpClient)
                     .build();
+
+            // Initialize ApiService instance.
             mApiService = retrofit.create(ApiService.class);
         }
         return mApiService;
