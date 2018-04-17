@@ -6,11 +6,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.rpham.tonaltask.R;
+import com.example.rpham.tonaltask.data.Forecast;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,6 +47,7 @@ public class ForecastsFragment extends Fragment implements ForecastsContract.Vie
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         mUnbinder = ButterKnife.bind(this, view);
         mPresenter.attachView(this);
+        mPresenter.getForecasts(95132);
         return view;
     }
 
@@ -54,7 +59,7 @@ public class ForecastsFragment extends Fragment implements ForecastsContract.Vie
     }
 
     @Override
-    public void showForecasts() {
-
+    public void showForecasts(List<Forecast> forecastList) {
+        Log.i(TAG, "Got forecast list of size: " + forecastList.size());
     }
 }
