@@ -21,6 +21,8 @@ public class RestClient {
     private static final String API_ID = "8164a613b8e6973b5c91067d6a5e1c25";
     private static final String BASE_URL = "http://api.openweathermap.org/";
 
+    private static final String TEMPERATURE_UNIT_FORMAT = "imperial";
+
     // Static reference to this singleton class.
     private static RestClient sInstance;
 
@@ -49,6 +51,7 @@ public class RestClient {
                             Request request = chain.request();
                             HttpUrl httpUrl = request.url().newBuilder()
                                     .addQueryParameter("appid", API_ID)
+                                    .addQueryParameter("units", TEMPERATURE_UNIT_FORMAT)
                                     .build();
                             request = request.newBuilder()
                                     .url(httpUrl)

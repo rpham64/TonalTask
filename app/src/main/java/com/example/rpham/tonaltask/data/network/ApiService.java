@@ -6,8 +6,11 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
+/**
+ * Handles network requests using Retrofit.
+ */
 public interface ApiService {
 
     @GET("data/2.5/forecast")
-    Call<Response> getForecast(@Query("zip") int zipCode);
+    Call<Response> getForecastsAt(@Query("zip") int zipCode);
 }
