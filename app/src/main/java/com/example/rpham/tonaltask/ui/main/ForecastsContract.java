@@ -14,7 +14,7 @@ public interface ForecastsContract {
     }
 
     interface Presenter extends BasePresenter<ForecastsContract.View> {
-        void getForecasts(int zipCode);
+        void getForecastsAt(int zipCode);
         ApiService getApiService();
     }
 }

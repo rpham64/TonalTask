@@ -32,18 +32,23 @@ public class ForecastsPresenter implements ForecastsContract.Presenter {
         return mForecastsView;
     }
 
+    /**
+     * Issues a GET request for forecasts at the given zip code.
+     *
+     * @param zipCode Zip code of location.
+     */
     @Override
-    public void getForecasts(final int zipCode) {
-        Call<Response> call = getApiService().getForecast(zipCode);
+    public void getForecastsAt(final int zipCode) {
+        Call<Response> call = getApiService().getForecastsAt(zipCode);
         call.enqueue(new Callback<Response>() {
             @Override
             public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
                 if (!response.isSuccessful()) {
-                    Log.d(TAG, "Network response was unsuccessful.");
+                    Log.d(TAG, "Network request was unsuccessful.");
                 }
 
                 List<Forecast> forecastList = response.body().getForecasts();
-                Log.i(TAG, "ForecastList: " + forecastList.toString());
+                Log.i(TAG, "Got forecast list of size: " + forecastList.toString());
 
                 if (getView() != null) {
                     getView().showForecasts(forecastList);
