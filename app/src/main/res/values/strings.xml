@@ -3,4 +3,6 @@
     <string name="label_min_temp">Min Temp</string>
     <string name="label_max_temp">Max Temp</string>
     <string name="label_humidity">Humidity</string>
+    <string name="toast_forecast_response_error">Uh oh! Something went wrong trying to get the forecasts
+    for this zip code.</string>
 </resources>

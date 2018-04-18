@@ -34,7 +34,7 @@ public class ForecastsPresenter implements ForecastsContract.Presenter {
     }
 
     /**
-     * Issues a GET request for forecasts at the given zip code.
+     * Issues an HTTP GET request for forecasts at the given zip code.
      *
      * @param zipCode Zip code of location.
      */
@@ -46,6 +46,9 @@ public class ForecastsPresenter implements ForecastsContract.Presenter {
             public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
                 if (!response.isSuccessful() || response.body() == null) {
                     Log.d(TAG, "Network request was unsuccessful.");
+                    if (getView() != null) {
+                        getView().showResponseErrorToast();
+                    }
                     return;
                 }
                 List<Forecast> forecastList = response.body().getForecasts();
@@ -68,6 +71,9 @@ public class ForecastsPresenter implements ForecastsContract.Presenter {
             public void onFailure(Call<Response> call, Throwable t) {
                 t.printStackTrace();
                 Log.d(TAG, "Network request for forecasts in area " + zipCode + " failed.");
+                if (getView() != null) {
+                    getView().showResponseErrorToast();
+                }
             }
         });
     }

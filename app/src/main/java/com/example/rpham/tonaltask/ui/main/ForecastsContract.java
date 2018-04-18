@@ -11,6 +11,7 @@ public interface ForecastsContract {
 
     interface View extends BaseView {
         void showForecasts(List<Forecast> forecastList);
+        void showResponseErrorToast();
     }
 
     interface Presenter extends BasePresenter<ForecastsContract.View> {

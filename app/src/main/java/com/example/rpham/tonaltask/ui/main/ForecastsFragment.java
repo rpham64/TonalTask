@@ -74,6 +74,12 @@ public class ForecastsFragment extends Fragment implements ForecastsContract.Vie
     }
 
     @Override
+    public void showResponseErrorToast() {
+        Toast.makeText(getContext(), getString(R.string.toast_forecast_response_error),
+                Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public boolean onQueryTextSubmit(String zipCode) {
         Log.i(TAG, "Zip Code submitted: " + zipCode);
 
