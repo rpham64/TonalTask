@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/black_rectangular_border"
         app:iconifiedByDefault="false"
+        app:defaultQueryHint="Enter Zip Code"
         />
 
     <android.support.v7.widget.RecyclerView
