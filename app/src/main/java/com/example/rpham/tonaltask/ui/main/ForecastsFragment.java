@@ -91,6 +91,8 @@ public class ForecastsFragment extends Fragment implements ForecastsContract.Vie
                     Toast.LENGTH_SHORT).show();
         }
 
+        // Hide keyboard after hitting the Enter button.
+        mSearchViewZipCode.clearFocus();
         return true;
     }
 
