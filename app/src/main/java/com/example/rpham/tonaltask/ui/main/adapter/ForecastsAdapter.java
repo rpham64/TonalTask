@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.example.rpham.tonaltask.R;
 import com.example.rpham.tonaltask.data.Forecast;
 import com.example.rpham.tonaltask.data.ForecastMainInfo;
+import com.example.rpham.tonaltask.util.TimeUtils;
 
 import java.util.List;
 
@@ -48,6 +49,7 @@ public class ForecastsAdapter extends RecyclerView.Adapter<ForecastsAdapter.Fore
 
     class ForecastsViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.textview_time) TextView mTextViewTime;
         @BindView(R.id.textview_max_temperature) TextView mTextViewMaxTemperature;
         @BindView(R.id.textview_min_temperature) TextView mTextViewMinTemperature;
         @BindView(R.id.textview_humidity) TextView mTextViewHumidity;
@@ -58,6 +60,10 @@ public class ForecastsAdapter extends RecyclerView.Adapter<ForecastsAdapter.Fore
         }
 
         public void bindForecast(Forecast forecast) {
+            // Convert forecast unix time to modern date and time.
+            String time = TimeUtils.toString(forecast.getTime());
+            mTextViewTime.setText(time);
+
             ForecastMainInfo mainInfo = forecast.getMainInfo();
 
             // Convert max and min temperature values to String as TextViews cannot take float.
