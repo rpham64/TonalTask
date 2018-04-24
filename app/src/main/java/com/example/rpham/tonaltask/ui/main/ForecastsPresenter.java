@@ -7,7 +7,6 @@ import com.example.rpham.tonaltask.data.Response;
 import com.example.rpham.tonaltask.data.network.ApiService;
 import com.example.rpham.tonaltask.data.network.RestClient;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -51,19 +50,14 @@ public class ForecastsPresenter implements ForecastsContract.Presenter {
                     }
                     return;
                 }
+                Log.i(TAG, "Forecast Result: " + response.toString());
+
                 List<Forecast> forecastList = response.body().getForecasts();
                 Log.i(TAG, "Got forecast list of size: " + forecastList.size());
 
-                // Create forecast list for only the next 5 days.
-                List<Forecast> nextFiveForecastsList = new ArrayList<>();
-
-                for (int i = 0; i < 5; ++i) {
-                    nextFiveForecastsList.add(forecastList.get(i));
-                }
-
                 // Send the next five forecasts list to the View for displaying.
                 if (getView() != null) {
-                    getView().showForecasts(nextFiveForecastsList);
+                    getView().showForecasts(forecastList);
                 }
             }
 
