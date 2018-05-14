@@ -47,6 +47,12 @@ public class ForecastsAdapter extends RecyclerView.Adapter<ForecastsAdapter.Fore
         return mForecastList == null ? 0 : mForecastList.size();
     }
 
+    public void setForecasts(List<Forecast> forecasts) {
+        mForecastList.clear();
+        mForecastList.addAll(forecasts);
+        notifyDataSetChanged();
+    }
+
     class ForecastsViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.textview_time) TextView mTextViewTime;

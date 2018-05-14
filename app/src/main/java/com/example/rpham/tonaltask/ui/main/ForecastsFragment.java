@@ -18,6 +18,7 @@ import com.example.rpham.tonaltask.data.Forecast;
 import com.example.rpham.tonaltask.ui.main.adapter.ForecastsAdapter;
 import com.example.rpham.tonaltask.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -34,8 +35,8 @@ public class ForecastsFragment extends Fragment implements ForecastsContract.Vie
     // ButterKnife's Unbinder Contract
     private Unbinder mUnbinder;
 
-    private ForecastsPresenter mPresenter;
-    private ForecastsAdapter mAdapter;
+    private ForecastsContract.Presenter mPresenter;
+    private ForecastsAdapter mForecastsAdapter;
 
     public static ForecastsFragment newInstance() {
         return new ForecastsFragment();
@@ -45,7 +46,6 @@ public class ForecastsFragment extends Fragment implements ForecastsContract.Vie
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        mPresenter = new ForecastsPresenter();
     }
 
     @Nullable
@@ -53,15 +53,25 @@ public class ForecastsFragment extends Fragment implements ForecastsContract.Vie
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         mUnbinder = ButterKnife.bind(this, view);
-        mPresenter.attachView(this);
         mSearchViewZipCode.setOnQueryTextListener(this);
+
+        // Set up layout manager.
         mRecyclerViewForecastList.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // Set up adapter.
+        mForecastsAdapter = new ForecastsAdapter(getContext(), new ArrayList<Forecast>());
+        mRecyclerViewForecastList.setAdapter(mForecastsAdapter);
+
         return view;
     }
 
     @Override
+    public void setPresenter(@NonNull ForecastsContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
+
+    @Override
     public void onDestroyView() {
-        mPresenter.detachView();
         mUnbinder.unbind();
         super.onDestroyView();
     }
@@ -69,12 +79,11 @@ public class ForecastsFragment extends Fragment implements ForecastsContract.Vie
     @Override
     public void showForecasts(List<Forecast> forecastList) {
         Log.i(TAG, "Got forecast list of size: " + forecastList.size());
-        mAdapter = new ForecastsAdapter(getContext(), forecastList);
-        mRecyclerViewForecastList.setAdapter(mAdapter);
+        mForecastsAdapter.setForecasts(forecastList);
     }
 
     @Override
-    public void showResponseErrorToast() {
+    public void showFetchingForecastsError() {
         Toast.makeText(getContext(), getString(R.string.toast_forecast_response_error),
                 Toast.LENGTH_SHORT).show();
     }
