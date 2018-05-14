@@ -9,13 +9,15 @@ import java.util.List;
 
 public interface ForecastsContract {
 
-    interface View extends BaseView {
+    interface View extends BaseView<Presenter> {
+
         void showForecasts(List<Forecast> forecastList);
-        void showResponseErrorToast();
+
+        void showFetchingForecastsError();
     }
 
-    interface Presenter extends BasePresenter<ForecastsContract.View> {
+    interface Presenter extends BasePresenter {
+
         void getForecastsAt(int zipCode);
-        ApiService getApiService();
     }
 }
