@@ -1,35 +1,26 @@
 package com.example.rpham.tonaltask.ui.main;
 
-import android.util.Log;
+import android.support.annotation.NonNull;
 
 import com.example.rpham.tonaltask.data.Forecast;
-import com.example.rpham.tonaltask.data.Response;
-import com.example.rpham.tonaltask.data.network.ApiService;
-import com.example.rpham.tonaltask.data.network.RestClient;
+import com.example.rpham.tonaltask.data.network.ForecastsDataSource;
+import com.example.rpham.tonaltask.data.network.ForecastsRepository;
 
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
 
 public class ForecastsPresenter implements ForecastsContract.Presenter {
     private static final String TAG = ForecastsPresenter.class.getSimpleName();
 
-    private ForecastsContract.View mForecastsView;
+    private final ForecastsRepository mForecastsRepository;
 
-    @Override
-    public void attachView(ForecastsContract.View view) {
-        mForecastsView = view;
-    }
+    private final ForecastsContract.View mForecastsView;
 
-    @Override
-    public void detachView() {
-        mForecastsView = null;
-    }
+    public ForecastsPresenter(@NonNull ForecastsRepository forecastsRepository,
+                              @NonNull ForecastsContract.View forecastsView) {
+        mForecastsRepository = forecastsRepository;
+        mForecastsView = forecastsView;
 
-    @Override
-    public ForecastsContract.View getView() {
-        return mForecastsView;
+        mForecastsView.setPresenter(this);
     }
 
     /**
@@ -39,41 +30,16 @@ public class ForecastsPresenter implements ForecastsContract.Presenter {
      */
     @Override
     public void getForecastsAt(final int zipCode) {
-        Call<Response> call = getApiService().getForecastsAt(zipCode);
-        call.enqueue(new Callback<Response>() {
+        mForecastsRepository.getForecastsAt(zipCode, new ForecastsDataSource.GetForecastsCallback() {
             @Override
-            public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
-                if (!response.isSuccessful() || response.body() == null) {
-                    Log.d(TAG, "Network request was unsuccessful.");
-                    if (getView() != null) {
-                        getView().showResponseErrorToast();
-                    }
-                    return;
-                }
-                Log.i(TAG, "Forecast Result: " + response.toString());
-
-                List<Forecast> forecastList = response.body().getForecasts();
-                Log.i(TAG, "Got forecast list of size: " + forecastList.size());
-
-                // Send the next five forecasts list to the View for displaying.
-                if (getView() != null) {
-                    getView().showForecasts(forecastList);
-                }
+            public void onForecastsFetched(List<Forecast> forecasts) {
+                mForecastsView.showForecasts(forecasts);
             }
 
             @Override
-            public void onFailure(Call<Response> call, Throwable t) {
-                t.printStackTrace();
-                Log.d(TAG, "Network request for forecasts in area " + zipCode + " failed.");
-                if (getView() != null) {
-                    getView().showResponseErrorToast();
-                }
+            public void onDataNotAvailable() {
+                mForecastsView.showFetchingForecastsError();
             }
         });
-    }
-
-    @Override
-    public ApiService getApiService() {
-        return RestClient.getInstance().getApiService();
     }
 }
